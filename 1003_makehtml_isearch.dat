@@ -1,0 +1,266 @@
+<!--
+    isearch-function
+    2016-2-16 v1.00
+-->
+
+<style>
+<!--
+body {
+    /* margin-left: 310px; */
+}
+#isearch_container {
+    background-color: #253960;
+    color: #ffffff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 100%;
+    overflow: auto;
+    display: none;
+}
+#isearch_container a {
+    color: #88bbff;
+}
+#isearch_container a:visited {
+    color: #cc99ff;
+}
+#header_link_container {
+    margin-left: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#isearch_controls {
+    margin-left: 5px;
+    margin-top: 15px;
+    margin-bottom: 12px;
+    display: none;
+}
+#isearch_controls form {
+    margin: 0;
+}
+#result_table {
+    /* table-layout: fixed; */
+    width: 100%;
+    border: none;
+    display: none;
+}
+#result_table td {
+    word-break: break-all;
+    /* word-wrap: break-word; */
+    /* overflow-wrap: break-word; */
+}
+#result_list {
+    width: 95%;
+    margin: 0;
+    padding-left: 5px;
+    display: none;
+}
+-->
+</style>
+
+<script type="text/javascript">
+<!--
+var index_line_node = [];        // 索引のノード(配列)
+var next_isearch_pointer = 0;    // 次回の検索開始位置
+var one_isearch_count_max = 200; // 1回あたりの検索最大数
+var first_result_url = "";       // 先頭の検索結果のURL
+var now_isearch_word = "";       // 現在の検索単語
+var now_isearch_regexp = null;   // 現在の正規表現
+var old_makeinfo_flag = false;   // 古い makeinfo v4.13 の対応用
+
+// ***** 初期化 *****
+if (document.addEventListener) {
+    document.addEventListener("DOMContentLoaded", init_func, false);
+} else {
+    // (古いブラウザ(IE8等)のときは何もしない)
+}
+function init_func() {
+    var i;
+    var html_st;
+    var node1, node1B, node1C, node2, node2_save;
+
+    // ***** 変数の初期化 *****
+    index_line_node = [];
+    next_isearch_pointer = 0;
+    first_result_url = "";
+    now_isearch_word = "";
+    now_isearch_regexp = null;
+    old_makeinfo_flag = false;
+
+    // ***** 検索の画面部品を生成 *****
+    node1 = document.createElement("div");
+    node1.id = "isearch_container";
+    node1.innerHTML =
+        '<div id="header_link_container">' +
+        '<a href="#Top1000">[Top]<\/a>' +
+        '<a href="#SEC_Contents">[Contents]<\/a>' +
+        '<a href="#Index1000">[Index]<\/a>' +
+        '<\/div>' +
+        '<div id="isearch_controls">' +
+        '<form action="#" onsubmit="return false;">' +
+        '<b>Search : <\/b><input type="text" id="word" value="">' +
+        '<\/form>' +
+        '<\/div>' +
+        '<table id="result_table"><\/table>' +
+        '<ul id="result_list"><\/ul>';
+    node2 = document.getElementsByTagName("body")[0].childNodes[0];
+    node2.parentNode.insertBefore(node1, node2);
+    node2_save = node2; // 下で使用する
+    node1 = document.getElementById("word");
+    node1.addEventListener("keydown", keydown, false);
+    node1.addEventListener("keyup",   keyup,   false);
+
+    // ***** 索引のノードを取得 *****
+    node1 = document.getElementsByClassName("index-fn")[0];
+    if (node1.tBodies) {
+        html_st = node1.tBodies[0].innerHTML;
+        old_makeinfo_flag = false;
+    } else {
+        html_st = node1.innerHTML;
+        old_makeinfo_flag = true;
+    }
+    if (old_makeinfo_flag) {
+        node1 = document.getElementById("result_list");
+        node1.innerHTML = html_st;
+        node1B = node1.getElementsByTagName('li');
+    } else {
+        node1 = document.getElementById("result_table");
+        node1.innerHTML = html_st;
+        node1B = node1.getElementsByTagName('tr');
+    }
+    for (i = 0; i < node1B.length; i++) {
+        node1C = node1B[i].getElementsByTagName("code")[0];
+        if (node1C) {
+            index_line_node.push(node1B[i]);
+        } else {
+            node1B[i].parentNode.removeChild(node1B[i]);
+            i--;
+        }
+    }
+
+    // ***** リンク先のアンカーを生成 *****
+    // ( [Top] )
+    node1 = document.createElement("a");
+    node1.name = "Top1000";
+    node2 = node2_save;
+    node2.parentNode.insertBefore(node1, node2);
+    // ( [Contents] )
+    if (old_makeinfo_flag) {
+        node1 = document.createElement("a");
+        node1.name = "SEC_Contents";
+        node2 = document.getElementsByClassName("contents")[0];
+        node2.parentNode.insertBefore(node1, node2);
+    }
+    // ( [Index] )
+    node1 = document.createElement("a");
+    node1.name = "Index1000";
+    node2 = document.getElementsByClassName("appendix")[2]; // Appendix C
+    node2.parentNode.insertBefore(node1, node2);
+
+    // ***** 表示の初期化 *****
+    exec_isearch(0);
+    document.getElementsByTagName("body")[0].style.marginLeft = "310px";
+    document.getElementById("isearch_container").style.display = "block";
+    document.getElementById("isearch_controls").style.display = "block";
+}
+
+// ***** キー押し下げ *****
+function keydown(ev) {
+    var key_code;
+
+    // ***** キーコードの取得 *****
+    key_code = ev.keyCode;
+    // ***** Enterキーを押すと、先頭の検索結果へジャンプ *****
+    if (key_code == 13 && first_result_url != "") {
+        window.location.href = first_result_url;
+    }
+}
+
+// ***** キー押し上げ *****
+function keyup() {
+    // ***** 検索遅延タイマをセット *****
+    next_isearch_pointer = 0;
+    setTimeout(function () { exec_isearch(next_isearch_pointer); }, 1);
+}
+
+// ***** 検索実行 *****
+function exec_isearch(isearch_pointer) {
+    var i;
+    var word, node1, node2;
+    var begin_flag = false;
+    var last_flag  = false;
+
+    // ***** 単語を取得して、正規表現オブジェクトを生成する *****
+    if (isearch_pointer == 0) {
+        if (old_makeinfo_flag) {
+            document.getElementById("result_list").style.display = "none";
+        } else {
+            document.getElementById("result_table").style.display = "none";
+        }
+        next_isearch_pointer = 0;
+        first_result_url = "";
+        now_isearch_word = word = document.getElementById("word").value;
+        word = word.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, "\\$1");   // 特殊文字の無効化
+        word = escape_html(word);                                      // HTML文字列のエスケープ処理
+        if (word.charAt(0) == " ") { begin_flag = true; }              // 先頭空白チェック
+        if (word.charAt(word.length - 1) == " ") { last_flag = true; } // 末尾空白チェック
+        word = word.replace(/(^\s+)|(\s+$)/g, "");                     // 前後の空白を削除
+        if (word != "") {
+            if (begin_flag) { word = "^" + word; }
+            if (last_flag)  { word = word + "$"; }
+        }
+        now_isearch_regexp = new RegExp(word, "i");
+    }
+
+    // ***** 検索を実行してヒットした行のみを表示する *****
+    for (i = isearch_pointer; i < index_line_node.length; i++) {
+        // (1回あたりの検索最大数を超えたら続きを次回にまわす)
+        if (i >= isearch_pointer + one_isearch_count_max) {
+            break;
+        }
+        node1 = index_line_node[i].getElementsByTagName("code")[0];
+        if (node1 && now_isearch_word != "" && node1.innerHTML.match(now_isearch_regexp)) {
+            if (old_makeinfo_flag) {
+                index_line_node[i].style.display = "block";
+            } else {
+                index_line_node[i].style.display = "table-row";
+            }
+            if (first_result_url == "") {
+                node2 = index_line_node[i].getElementsByTagName('a')[0];
+                if (node2) {
+                    first_result_url = node2.href;
+                }
+            }
+        } else {
+            index_line_node[i].style.display = "none";
+        }
+    }
+
+    // ***** 検索終了のチェック *****
+    if (i < index_line_node.length) {
+        // ***** 検索遅延タイマをセット *****
+        next_isearch_pointer += one_isearch_count_max;
+        setTimeout(function () { exec_isearch(next_isearch_pointer); }, 1);
+    } else {
+        if (old_makeinfo_flag) {
+            document.getElementById("result_list").style.display = "block";
+        } else {
+            document.getElementById("result_table").style.display = "table";
+        }
+    }
+}
+
+// ***** HTML文字列のエスケープ処理 *****
+function escape_html(html_st) {
+    return html_st
+        .replace(/&/g,   "&amp;")
+        .replace(/[<]/g, "&lt;")
+        .replace(/>/g,   "&gt;")
+        .replace(/"/g,   "&quot;")
+        .replace(/'/g,   "&#39;");
+}
+
+// -->
+</script>
+

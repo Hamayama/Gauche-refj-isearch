@@ -52,7 +52,6 @@ var index_line_node = [];        // 索引のノード(配列)
 var next_isearch_pointer = 0;    // 次回の検索開始位置
 var one_isearch_count_max = 200; // 1回あたりの検索最大数
 var first_result_url = "";       // 先頭の検索結果のURL
-var now_isearch_word = "";       // 現在の検索単語
 var now_isearch_regexp = null;   // 現在の正規表現
 var old_makeinfo_flag = false;   // 古い makeinfo v4.13 の対応用
 var old_browser_flag = false;    // 古いブラウザ(IE8,IE9等)の対策用
@@ -66,7 +65,6 @@ window.onload = function () {
     index_line_node = [];
     next_isearch_pointer = 0;
     first_result_url = "";
-    now_isearch_word = "";
     now_isearch_regexp = null;
     old_makeinfo_flag = false;
     old_browser_flag = false;
@@ -108,7 +106,7 @@ function keydown(ev) {
 
     // ***** キーコードの取得 *****
     key_code = ev.keyCode;
-    // ***** Enterキーを押すと、先頭の検索結果へジャンプ *****
+    // ***** Enterキーのときは、先頭の検索結果へジャンプ *****
     if (key_code == 13 && first_result_url != "") {
         parent.frame2.location.href = first_result_url;
     }
@@ -150,11 +148,9 @@ function exec_isearch(isearch_pointer) {
         if (word != "") {
             if (begin_flag) { word = "^" + word; }
             if (last_flag)  { word = word + "$"; }
-            now_isearch_word = word;
             now_isearch_regexp = new RegExp(word, "i");
         } else {
             // (単語が空なら抜ける)
-            now_isearch_word = "";
             now_isearch_regexp = null;
             return;
         }

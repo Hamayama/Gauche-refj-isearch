@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-18 v1.04
+# 2016-2-18 v1.05
 
 #set -x
 set -u
@@ -24,8 +24,15 @@ check_html_maker () {
     fi
   fi
   if [ -z "$HTML_MAKER" ]; then
-    HTML_MAKER='makeinfo'
-    HTML_OPTION='--html --no-split'
+    type makeinfo
+    if [ $? -eq 0 ]; then
+      HTML_MAKER='makeinfo'
+      HTML_OPTION='--html --no-split'
+    fi
+  fi
+  if [ -z "$HTML_MAKER" ]; then
+    echo 'There is no html maker.  Aborting.'
+    exit 1
   fi
   echo "HTML_MAKER=$HTML_MAKER"
 }

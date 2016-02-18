@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 </head>
 
-<frameset cols="300,*">
+<frameset cols="320,*">
 <frame name="frame1" id="frame1" src="input.html">
 <frame name="frame2" id="frame2" src="main.html">
 <noframes>

@@ -26,6 +26,7 @@ body a:visited {
     margin-left: 5px;
     margin-top: 15px;
     margin-bottom: 12px;
+    display: none;
 }
 #input_container form {
     margin: 0;
@@ -54,6 +55,7 @@ var first_result_url = "";       // 先頭の検索結果のURL
 var now_isearch_word = "";       // 現在の検索単語
 var now_isearch_regexp = null;   // 現在の正規表現
 var old_makeinfo_flag = false;   // 古い makeinfo v4.13 の対応用
+var old_browser_flag = false;    // 古いブラウザ(IE8,IE9等)の対策用
 
 // ***** 初期化 *****
 window.onload = function () {
@@ -67,16 +69,20 @@ window.onload = function () {
     now_isearch_word = "";
     now_isearch_regexp = null;
     old_makeinfo_flag = false;
+    old_browser_flag = false;
+
+    // ***** 古いブラウザ(IE8,IE9等)の判定 *****
+    old_browser_flag = !(typeof window.FileReader === "function");
+    if (old_browser_flag) {
+        // (検索機能を使用不可とする)
+        return;
+    }
 
     // ***** イベントハンドラ登録 *****
     node1 = document.getElementById("word");
     if (document.addEventListener) {
         node1.addEventListener("keydown", keydown, false);
         node1.addEventListener("keyup",   keyup,   false);
-    } else if (document.attachEvent) {
-        // (IE8対策)
-        node1.attachEvent("onkeydown", keydown);
-        node1.attachEvent("onkeyup",   keyup);
     }
 
     // ***** 索引のノードを取得 *****
@@ -93,16 +99,14 @@ window.onload = function () {
     }
 
     // ***** 表示の初期化 *****
-    exec_isearch(0);
-};
+    document.getElementById("input_container").style.display = "block";
+}
 
 // ***** キー押し下げ *****
 function keydown(ev) {
     var key_code;
 
     // ***** キーコードの取得 *****
-    // (IE8対策)
-    ev = ev || window.event;
     key_code = ev.keyCode;
     // ***** Enterキーを押すと、先頭の検索結果へジャンプ *****
     if (key_code == 13 && first_result_url != "") {
@@ -115,8 +119,6 @@ function keyup(ev) {
     var key_code;
 
     // ***** キーコードの取得 *****
-    // (IE8対策)
-    ev = ev || window.event;
     key_code = ev.keyCode;
     // ***** 矢印/PageUp/PageDown/Home/Endキーのときは抜ける *****
     if (key_code >= 33 && key_code <= 40) {
@@ -151,8 +153,10 @@ function exec_isearch(isearch_pointer) {
             now_isearch_word = word;
             now_isearch_regexp = new RegExp(word, "i");
         } else {
+            // (単語が空なら抜ける)
             now_isearch_word = "";
             now_isearch_regexp = null;
+            return;
         }
     }
 
@@ -163,7 +167,7 @@ function exec_isearch(isearch_pointer) {
             break;
         }
         node1 = index_line_node[i].getElementsByTagName("code")[0];
-        if (node1 && now_isearch_word != "" && node1.innerHTML.match(now_isearch_regexp)) {
+        if (node1 && node1.innerHTML.match(now_isearch_regexp)) {
             if (old_makeinfo_flag) {
                 index_line_node[i].style.display = "block";
             } else {

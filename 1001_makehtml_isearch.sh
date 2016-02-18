@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-18 v1.01
+# 2016-2-18 v1.02
 
 #set -x
 set -u
@@ -13,7 +13,7 @@ check_html_maker () {
   type texi2html
   if [ $? -eq 0 ]; then
     HTML_MAKER='texi2html'
-    HTML_OPTION='--number --split=section'
+    HTML_OPTION='--number --split=section --init-file=$(srcdir)/1004_texi2html_init.pl'
     HTML_OPTION_JP='--init-file=$(srcdir)/ja-init.pl'
   fi
   if [ -z "$HTML_MAKER" ]; then
@@ -123,8 +123,8 @@ make_isearch () {
 
   echo $TABLE_BEGIN > $INDEX_DATA
   for f in $INDEX_FILES; do
-    gosh 1003_makehtml_isearch.scm \
-         $f                        \
+    gosh 1003_extract_index_data.scm \
+         $f                          \
          $INDEX_DATA
   done
   echo $TABLE_END >> $INDEX_DATA

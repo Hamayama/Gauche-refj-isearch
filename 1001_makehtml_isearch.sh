@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-19 v1.09
+# 2016-2-19 v1.10
 
 #set -x
 set -u

@@ -47,7 +47,7 @@ body a:visited {
 <script type="text/javascript">
 <!--
 var index_line_node = [];        // 索引のノード(配列)
-var next_isearch_pointer = 0;    // 次回の検索開始位置
+var isearch_pointer = 0;         // 次回の検索開始位置
 var one_isearch_count_max = 200; // 1回あたりの検索最大数
 var first_result_url = "";       // 先頭の検索結果のURL
 var now_isearch_regexp = null;   // 現在の正規表現
@@ -59,14 +59,6 @@ window.onload = function () {
     var i;
     var node1, node2;
 
-    // ***** 変数の初期化 *****
-    index_line_node = [];
-    next_isearch_pointer = 0;
-    first_result_url = "";
-    now_isearch_regexp = null;
-    old_makeinfo_flag = false;
-    old_browser_flag = false;
-
     // ***** 古いブラウザ(IE8,IE9等)の判定 *****
     old_browser_flag = !(typeof window.FileReader === "function");
     if (old_browser_flag) {
@@ -76,10 +68,8 @@ window.onload = function () {
 
     // ***** イベントハンドラ登録 *****
     node1 = document.getElementById("word");
-    if (document.addEventListener) {
-        node1.addEventListener("keydown", keydown, false);
-        node1.addEventListener("keyup",   keyup,   false);
-    }
+    node1.addEventListener("keydown", keydown, false);
+    node1.addEventListener("keyup",   keyup,   false);
 
     // ***** 索引のノードを取得 *****
     node1 = document.getElementById("result_table");
@@ -90,13 +80,14 @@ window.onload = function () {
         node2 = node1.getElementsByTagName('li');
         old_makeinfo_flag = true;
     }
+    index_line_node = [];
     for (i = 0; i < node2.length; i++) {
         index_line_node.push(node2[i]);
     }
 
     // ***** 表示の初期化 *****
     document.getElementById("input_container").style.display = "block";
-}
+};
 
 // ***** キー押し下げ *****
 function keydown(ev) {
@@ -121,31 +112,29 @@ function keyup(ev) {
         return;
     }
     // ***** 検索遅延タイマをセット *****
-    next_isearch_pointer = 0;
-    setTimeout(function () { exec_isearch(next_isearch_pointer); }, 10);
+    isearch_pointer = 0;
+    setTimeout(exec_isearch, 10);
 }
 
 // ***** 検索実行 *****
-function exec_isearch(isearch_pointer) {
+function exec_isearch() {
     var i;
     var word, node1, node2;
-    var begin_flag = false;
-    var last_flag  = false;
+    var space_flag1, space_flag2;
 
     // ***** 単語を取得して、正規表現オブジェクトを生成する *****
     if (isearch_pointer == 0) {
         document.getElementById("result_table").style.display = "none";
-        next_isearch_pointer = 0;
         first_result_url = "";
         word = document.getElementById("word").value;
-        word = word.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, "\\$1");   // 特殊文字の無効化
-        word = escape_html(word);                                      // HTML文字列のエスケープ処理
-        if (word.charAt(0) == " ") { begin_flag = true; }              // 先頭空白チェック
-        if (word.charAt(word.length - 1) == " ") { last_flag = true; } // 末尾空白チェック
-        word = word.replace(/(^\s+)|(\s+$)/g, "");                     // 前後の空白を削除
+        word = word.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, "\\$1"); // 特殊文字の無効化
+        word = escape_html(word);                                    // HTML文字列のエスケープ処理
+        space_flag1 = (word.charAt(0) == " ");                       // 先頭の空白チェック
+        space_flag2 = (word.charAt(word.length - 1) == " ");         // 末尾の空白チェック
+        word = word.replace(/(^\s+)|(\s+$)/g, "");                   // 前後の空白を削除
         if (word != "") {
-            if (begin_flag) { word = "^" + word; }
-            if (last_flag)  { word = word + "$"; }
+            if (space_flag1) { word = "^" + word; }
+            if (space_flag2) { word = word + "$"; }
             now_isearch_regexp = new RegExp(word, "i");
         } else {
             // (単語が空なら抜ける)
@@ -181,8 +170,8 @@ function exec_isearch(isearch_pointer) {
     // ***** 検索終了のチェック *****
     if (i < index_line_node.length) {
         // ***** 検索遅延タイマをセット *****
-        next_isearch_pointer += one_isearch_count_max;
-        setTimeout(function () { exec_isearch(next_isearch_pointer); }, 10);
+        isearch_pointer += one_isearch_count_max;
+        setTimeout(exec_isearch, 10);
     } else {
         if (old_makeinfo_flag) {
             document.getElementById("result_table").style.display = "block";

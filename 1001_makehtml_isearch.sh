@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-19 v1.10
+# 2016-2-20 v1.11
 
 #set -x
 set -u
@@ -128,6 +128,7 @@ make_isearch () {
       ;;
   esac
 
+  echo "extract index data : $INDEX_DATA"
   echo $TABLE_BEGIN > $INDEX_DATA
   for f in $INDEX_FILES; do
     gosh 1003_extract_index_data.scm \

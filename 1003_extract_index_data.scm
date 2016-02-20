@@ -27,10 +27,14 @@
           (set! index-scope-flag #t))
         (loop (read-line)))
        ((rxmatch #/<code>/ line)
-        (print (regexp-replace-all 
+        (print (regexp-replace-all*
+                line
                 #/<a href="/
-                line 
-                (format #f "<a target=\"frame2\" href=\"~a" href-str)))
+                (format #f "<a target=\"frame2\" href=\"~a" href-str)
+                #/<tr><td><\/td>/
+                "<tr>"
+                #/<td>&nbsp;<\/td>/
+                ""))
         (loop (read-line)))
        ((not (or (rxmatch #/<\/table>/ line)
                  (rxmatch #/<\/ul>/    line)))

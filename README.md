@@ -49,10 +49,10 @@
    ```
    gauche-refe-isearch.html       英語版の起動用HTMLファイル
    gauche-refe-isearch-input.html 英語版の検索処理用HTMLファイル
-   gauche-refe-isearch-main.html  英語版のデータ(データ分割時はフォルダになります)
+   gauche-refe-isearch-main.html  英語版のデータ(データ分割時にはフォルダになります)
    gauche-refj-isearch.html       日本語版の起動用HTMLファイル
    gauche-refj-isearch-input.html 日本語版の検索処理用HTMLファイル
-   gauche-refj-isearch-main.html  日本語版のデータ(データ分割時はフォルダになります)
+   gauche-refj-isearch-main.html  日本語版のデータ(データ分割時にはフォルダになります)
    ```
 
 
@@ -111,6 +111,7 @@
 - 2016-2-19  v1.08 検索処理の不要行削除等
 - 2016-2-19  v1.09 検索結果の余白調整
 - 2016-2-19  v1.10 HTMLのフレーム設定修正
+- 2016-2-20  v1.11 検索処理見直し等
 
 
-(2016-2-19)
+(2016-2-20)

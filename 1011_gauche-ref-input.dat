@@ -30,7 +30,6 @@ body a:visited {
     margin: 0;
 }
 #result_table {
-    /* table-layout: fixed; */
     width: 100%;
     margin: 0;
     padding-left: 0;
@@ -39,20 +38,20 @@ body a:visited {
 }
 #result_table td {
     word-break: break-all;
-    /* word-wrap: break-word; */
-    /* overflow-wrap: break-word; */
 }
 -->
 </style>
 <script type="text/javascript">
 <!--
-var index_line_node = [];        // 索引のノード(配列)
-var isearch_pointer = 0;         // 次回の検索開始位置
-var one_isearch_count_max = 200; // 1回あたりの検索最大数
-var first_result_url = "";       // 先頭の検索結果のURL
-var now_isearch_regexp = null;   // 現在の正規表現
-var old_makeinfo_flag = false;   // 古い makeinfo v4.13 の対応用
-var old_browser_flag = false;    // 古いブラウザ(IE8,IE9等)の対策用
+var index_word_num = 0;        // 索引の単語の数
+var index_word = [];           // 索引の単語(配列)
+var index_word_node = [];      // 索引の単語のノード(配列)
+var max_isearch_count = 200;   // 1回あたりの最大検索数
+var now_isearch_pointer = 0;   // 現在の検索開始位置
+var now_isearch_regexp = null; // 現在の正規表現オブジェクト
+var first_result_url = "";     // 先頭の検索結果のURL
+var old_makeinfo_flag = false; // 古い makeinfo v4.13 の対応用
+var old_browser_flag = false;  // 古いブラウザ(IE8,IE9等)の対策用
 
 // ***** 初期化 *****
 window.onload = function () {
@@ -71,7 +70,7 @@ window.onload = function () {
     node1.addEventListener("keydown", keydown, false);
     node1.addEventListener("keyup",   keyup,   false);
 
-    // ***** 索引のノードを取得 *****
+    // ***** 索引の単語とノードを取得 *****
     node1 = document.getElementById("result_table");
     if (node1.tBodies) {
         node2 = node1.getElementsByTagName('tr');
@@ -80,9 +79,12 @@ window.onload = function () {
         node2 = node1.getElementsByTagName('li');
         old_makeinfo_flag = true;
     }
-    index_line_node = [];
-    for (i = 0; i < node2.length; i++) {
-        index_line_node.push(node2[i]);
+    index_word_num = node2.length;
+    index_word = [];
+    index_word_node = [];
+    for (i = 0; i < index_word_num; i++) {
+        index_word[i] = node2[i].getElementsByTagName("code")[0].innerHTML;
+        index_word_node[i] = node2[i];
     }
 
     // ***** 表示の初期化 *****
@@ -95,7 +97,7 @@ function keydown(ev) {
 
     // ***** キーコードの取得 *****
     key_code = ev.keyCode;
-    // ***** Enterキーのときは、先頭の検索結果へジャンプ *****
+    // ***** Enterキーのときは、先頭の検索結果のURLへジャンプ *****
     if (key_code == 13 && first_result_url != "") {
         parent.frame2.location.href = first_result_url;
     }
@@ -112,18 +114,18 @@ function keyup(ev) {
         return;
     }
     // ***** 検索遅延タイマをセット *****
-    isearch_pointer = 0;
+    now_isearch_pointer = 0;
     setTimeout(exec_isearch, 10);
 }
 
 // ***** 検索実行 *****
 function exec_isearch() {
     var i;
-    var word, node1, node2;
+    var word, node1;
     var space_flag1, space_flag2;
 
     // ***** 単語を取得して、正規表現オブジェクトを生成する *****
-    if (isearch_pointer == 0) {
+    if (now_isearch_pointer == 0) {
         document.getElementById("result_table").style.display = "none";
         first_result_url = "";
         word = document.getElementById("word").value;
@@ -144,33 +146,32 @@ function exec_isearch() {
     }
 
     // ***** 検索を実行してヒットした行のみを表示する *****
-    for (i = isearch_pointer; i < index_line_node.length; i++) {
-        // (1回あたりの検索最大数を超えたら続きを次回にまわす)
-        if (i >= isearch_pointer + one_isearch_count_max) {
+    for (i = now_isearch_pointer; i < index_word_num; i++) {
+        // (1回あたりの最大検索数を超えたら続きを次回にまわす)
+        if (i >= now_isearch_pointer + max_isearch_count) {
             break;
         }
-        node1 = index_line_node[i].getElementsByTagName("code")[0];
-        if (node1 && node1.innerHTML.match(now_isearch_regexp)) {
+        if (index_word[i].match(now_isearch_regexp)) {
             if (old_makeinfo_flag) {
-                index_line_node[i].style.display = "block";
+                index_word_node[i].style.display = "block";
             } else {
-                index_line_node[i].style.display = "table-row";
+                index_word_node[i].style.display = "table-row";
             }
             if (first_result_url == "") {
-                node2 = index_line_node[i].getElementsByTagName('a')[0];
-                if (node2) {
-                    first_result_url = node2.href;
+                node1 = index_word_node[i].getElementsByTagName("a")[0];
+                if (node1) {
+                    first_result_url = node1.href;
                 }
             }
         } else {
-            index_line_node[i].style.display = "none";
+            index_word_node[i].style.display = "none";
         }
     }
 
     // ***** 検索終了のチェック *****
-    if (i < index_line_node.length) {
+    if (i < index_word_num) {
         // ***** 検索遅延タイマをセット *****
-        isearch_pointer += one_isearch_count_max;
+        now_isearch_pointer += max_isearch_count;
         setTimeout(exec_isearch, 10);
     } else {
         if (old_makeinfo_flag) {

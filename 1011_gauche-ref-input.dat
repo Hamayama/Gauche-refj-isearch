@@ -59,7 +59,7 @@ window.onload = function () {
     var node1, node2;
 
     // ***** 古いブラウザ(IE8,IE9等)の判定 *****
-    old_browser_flag = !(typeof window.FileReader === "function");
+    old_browser_flag = !(window.FileReader);
     if (old_browser_flag) {
         // (検索機能を使用不可とする)
         return;
@@ -68,17 +68,11 @@ window.onload = function () {
     // ***** イベントハンドラ登録 *****
     node1 = document.getElementById("word");
     node1.addEventListener("keydown", keydown, false);
-    node1.addEventListener("keyup",   keyup,   false);
 
     // ***** 索引の単語とノードを取得 *****
     node1 = document.getElementById("result_table");
-    if (node1.tBodies) {
-        node2 = node1.getElementsByTagName('tr');
-        old_makeinfo_flag = false;
-    } else {
-        node2 = node1.getElementsByTagName('li');
-        old_makeinfo_flag = true;
-    }
+    old_makeinfo_flag = !(node1.tBodies);
+    node2 = node1.getElementsByTagName(old_makeinfo_flag ? "li" : "tr");
     index_word_num = node2.length;
     index_word = [];
     index_word_node = [];
@@ -97,21 +91,13 @@ function keydown(ev) {
 
     // ***** キーコードの取得 *****
     key_code = ev.keyCode;
-    // ***** Enterキーのときは、先頭の検索結果のURLへジャンプ *****
-    if (key_code == 13 && first_result_url != "") {
-        parent.frame2.location.href = first_result_url;
-    }
-}
-
-// ***** キー押し上げ *****
-function keyup(ev) {
-    var key_code;
-
-    // ***** キーコードの取得 *****
-    key_code = ev.keyCode;
     // ***** 矢印/PageUp/PageDown/Home/Endキーのときは抜ける *****
     if (key_code >= 33 && key_code <= 40) {
         return;
+    }
+    // ***** Enterキーのときは、先頭の検索結果のURLへジャンプ *****
+    if (key_code == 13 && first_result_url != "") {
+        parent.frame2.location.href = first_result_url;
     }
     // ***** 検索遅延タイマをセット *****
     now_isearch_pointer = 0;
@@ -121,8 +107,7 @@ function keyup(ev) {
 // ***** 検索実行 *****
 function exec_isearch() {
     var i;
-    var word, node1;
-    var space_flag1, space_flag2;
+    var word, space_flag1, space_flag2;
 
     // ***** 単語を取得して、正規表現オブジェクトを生成する *****
     if (now_isearch_pointer == 0) {
@@ -152,16 +137,10 @@ function exec_isearch() {
             break;
         }
         if (index_word[i].match(now_isearch_regexp)) {
-            if (old_makeinfo_flag) {
-                index_word_node[i].style.display = "block";
-            } else {
-                index_word_node[i].style.display = "table-row";
-            }
+            index_word_node[i].style.display =
+                old_makeinfo_flag ? "block" : "table-row";
             if (first_result_url == "") {
-                node1 = index_word_node[i].getElementsByTagName("a")[0];
-                if (node1) {
-                    first_result_url = node1.href;
-                }
+                first_result_url = index_word_node[i].getElementsByTagName("a")[0].href;
             }
         } else {
             index_word_node[i].style.display = "none";
@@ -174,11 +153,8 @@ function exec_isearch() {
         now_isearch_pointer += max_isearch_count;
         setTimeout(exec_isearch, 10);
     } else {
-        if (old_makeinfo_flag) {
-            document.getElementById("result_table").style.display = "block";
-        } else {
-            document.getElementById("result_table").style.display = "table";
-        }
+        document.getElementById("result_table").style.display =
+            old_makeinfo_flag ? "block" : "table";
     }
 }
 

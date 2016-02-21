@@ -16,16 +16,19 @@
         :if-exists :append))))
 
 (define (extract-index-data infile)
-  (let ((index-scope-flag #f)
+  (let ((done #f)
+        (line "")
+        (index-scope-flag #f)
         (href-str (or (values-ref (string-scan-right infile #\/ 'after*) 0)
                       infile)))
-    (let loop ((line (read-line)))
+    (while (not done)
+      (set! line (read-line))
       (cond
-       ((eof-object? line))
+       ((eof-object? line)
+        (set! done #t))
        ((not index-scope-flag)
-        (if (rxmatch #/class="index-fn"/ line)
-          (set! index-scope-flag #t))
-        (loop (read-line)))
+        (if (rxmatch #/class="index-/ line)
+          (set! index-scope-flag #t)))
        ((rxmatch #/<code>/ line)
         (print (regexp-replace-all*
                 line
@@ -34,11 +37,10 @@
                 #/<tr><td><\/td>/
                 "<tr>"
                 #/<td>&nbsp;<\/td>/
-                ""))
-        (loop (read-line)))
-       ((not (or (rxmatch #/<\/table>/ line)
-                 (rxmatch #/<\/ul>/    line)))
-        (loop (read-line)))
+                "")))
+       ((or (rxmatch #/<\/table>/ line)
+            (rxmatch #/<\/ul>/    line))
+        (set! index-scope-flag #f))
        ))
     ))
 

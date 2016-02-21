@@ -77,7 +77,7 @@ window.onload = function () {
     index_word = [];
     index_word_node = [];
     for (i = 0; i < index_word_num; i++) {
-        index_word[i] = node2[i].getElementsByTagName("code")[0].innerHTML;
+        index_word[i] = node2[i].getElementsByTagName("code")[0].textContent;
         index_word_node[i] = node2[i];
     }
 
@@ -117,7 +117,6 @@ function exec_isearch() {
         first_result_url = "";
         word = document.getElementById("word").value;
         word = word.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, "\\$1"); // 特殊文字の無効化
-        word = escape_html(word);                                    // HTML文字列のエスケープ処理
         space_flag1 = (word.charAt(0) == " ");                       // 先頭の空白チェック
         space_flag2 = (word.charAt(word.length - 1) == " ");         // 末尾の空白チェック
         word = word.replace(/(^\s+)|(\s+$)/g, "");                   // 前後の空白を削除
@@ -158,16 +157,6 @@ function exec_isearch() {
         document.getElementById("result_table").style.display =
             old_makeinfo_flag ? "block" : "table";
     }
-}
-
-// ***** HTML文字列のエスケープ処理 *****
-function escape_html(html_st) {
-    return html_st
-        .replace(/&/g,   "&amp;")
-        .replace(/[<]/g, "&lt;")
-        .replace(/>/g,   "&gt;")
-        .replace(/"/g,   "&quot;")
-        .replace(/'/g,   "&#39;");
 }
 
 // -->

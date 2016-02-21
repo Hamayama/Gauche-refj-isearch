@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-21 v1.13
+# 2016-2-21 v1.14
 
 #set -x
 set -u
@@ -98,7 +98,12 @@ make_isearch () {
   case "$HTML_MAKER" in
     "texi2html")
       START_FILE=$MAIN_FILE/gauche-$1.html
-      INDEX_FILES=`grep -l '"index-fn"' $MAIN_FILE/*.html`
+      IDX_FILES_1=`grep -l 'class="index-fn"' $MAIN_FILE/*.html`
+      IDX_FILES_2=`grep -l 'class="index-md"' $MAIN_FILE/*.html`
+      IDX_FILES_3=`grep -l 'class="index-lx"' $MAIN_FILE/*.html`
+      IDX_FILES_4=`grep -l 'class="index-cl"' $MAIN_FILE/*.html`
+      IDX_FILES_5=`grep -l 'class="index-vr"' $MAIN_FILE/*.html`
+      INDEX_FILES="$IDX_FILES_1 $IDX_FILES_2 $IDX_FILES_3 $IDX_FILES_4 $IDX_FILES_5"
       ANCHOR_FILE1=$MAIN_FILE/gauche-$1.html
       ANCHOR_FILE2=`grep -l 'class="contents"' $MAIN_FILE/*.html | head -1`
       ANCHOR_FILE3=`grep -l -E 'class="appendix">(Appendix C|C)' $MAIN_FILE/*.html | head -1`
@@ -108,7 +113,12 @@ make_isearch () {
       ;;
     "texi2any")
       START_FILE=$MAIN_FILE/index.html
-      INDEX_FILES=`grep -l '"index-fn"' $MAIN_FILE/*.html`
+      IDX_FILES_1=`grep -l 'class="index-fn"' $MAIN_FILE/*.html`
+      IDX_FILES_2=`grep -l 'class="index-md"' $MAIN_FILE/*.html`
+      IDX_FILES_3=`grep -l 'class="index-lx"' $MAIN_FILE/*.html`
+      IDX_FILES_4=`grep -l 'class="index-cl"' $MAIN_FILE/*.html`
+      IDX_FILES_5=`grep -l 'class="index-vr"' $MAIN_FILE/*.html`
+      INDEX_FILES="$IDX_FILES_1 $IDX_FILES_2 $IDX_FILES_3 $IDX_FILES_4 $IDX_FILES_5"
       ANCHOR_FILE1=$MAIN_FILE/index.html
       ANCHOR_FILE2=`grep -l 'class="contents"' $MAIN_FILE/*.html | head -1`
       ANCHOR_FILE3=`grep -l -E 'class="appendix">(Appendix C|C)' $MAIN_FILE/*.html | head -1`

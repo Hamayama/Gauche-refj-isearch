@@ -9,38 +9,23 @@
 
 
 ## マニュアルの生成手順
-1. 開発環境のインストール  
-   事前に開発環境がインストールされている必要があります。  
-   Windows の場合は、MinGW (32bit) または MSYS2/MinGW-w64 (64bit/32bit) の開発環境が必要です。  
-   以下のページを参考にインストールを実施ください。  
-   ＜MinGW (32bit) の場合＞  
-   https://gist.github.com/Hamayama/362f2eb14ae26d971ca4  
-   ＜MSYS2/MinGW-w64 (64bit/32bit) の場合＞  
-   http://practical-scheme.net/wiliki/wiliki.cgi?Gauche%3AWindows%2FMinGW-w64  
-   (すでにインストール済みであれば本手順は不要です)
+1. 事前準備  
+   事前に、Gaucheのインストール、開発環境のインストール、および、  
+   Gacuheの開発最新版のソース取得とコンパイル実施が必要になります。  
+   Windows の場合には、以下のページを参考に実施ください。  
+   ＜開発環境に MinGW (32bit) を使う場合＞  
+   https://gist.github.com/Hamayama/19d7e779cec0480af0cf  
+   ＜開発環境に MSYS2/MinGW-w64 (64bit/32bit) を使う場合＞  
+   https://gist.github.com/Hamayama/6666e5d2c8d5167d22f7
 
-2. Gaucheのインストール  
-   事前に Gauche がインストールされている必要があります。  
-   Windows の場合は、以下のページに Windows用バイナリインストーラ があるので、  
-   インストールを実施ください。  
-   http://practical-scheme.net/gauche/download-j.html  
-   (すでにインストール済みであれば本手順は不要です)
-
-3. Gauche のソースのダウンロード  
-   Gauche の GitHub のページ  
-   https://github.com/shirok/Gauche  
-   から、Download Zip ボタン等で開発最新版のソースをダウンロードします。  
-   そして適当な作業用フォルダ( c:\work 等)に展開してください。  
-   (注意) 作業用フォルダのパスには、空白を入れないようにしてください。
-
-4. 本ツールのファイルのコピー  
+2. 本ツールのファイルのコピー  
    本サイト( https://github.com/Hamayama/Gauche-refj-isearch )のファイルを、  
    (Download Zip ボタン等で)ダウンロードして、適当なフォルダに展開してください。  
    そして中のファイル一式を、Gauche のソースの doc フォルダ内にコピーしてください。
 
-5. 本ツールの実行  
+3. 本ツールの実行  
    Gauche のソースの doc フォルダ内にコピーしたファイルを実行します。  
-   Windows の場合は、MinGW (32bit) 環境であれば、1000_makehtml_isearch_msys.bat を、  
+   Windows の場合には、MinGW (32bit) 環境であれば、1000_makehtml_isearch_msys.bat を、  
    MSYS2/MinGW-w64 (64bit/32bit) 環境であれば、1000_makehtml_isearch_msys2.bat を、  
    ダブルクリック等で実行してください。  
    他のOSであれば、シェル上で、1001_makehtml_isearch.sh を実行してください。  
@@ -54,6 +39,8 @@
    gauche-refj-isearch-input.html 日本語版の検索処理用HTMLファイル
    gauche-refj-isearch-main.html  日本語版のデータ(データ分割時にはフォルダになります)
    ```
+   (注意) Makefileが見つからないというエラーが出る場合は、一度 Gauche のソースを  
+   コンパイルしてから、上記ファイルを実行してください。
 
 
 ## マニュアルの使い方
@@ -119,6 +106,7 @@
 - 2016-2-21  v1.13 検索を行わないキーを追加(Tab/Shift/Ctrl/Alt)
 - 2016-2-21  v1.14 検索用のデータにモジュール索引等のデータも追加。検索処理一部見直し等
 - 2016-2-21  v1.15 索引抽出処理見直し
+- 2016-2-22  v1.16 エラー処理追加
 
 
-(2016-2-21)
+(2016-2-22)

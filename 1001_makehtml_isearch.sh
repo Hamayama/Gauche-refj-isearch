@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-21 v1.15
+# 2016-2-22 v1.16
 
 #set -x
 set -u
@@ -88,6 +88,10 @@ make -f 1002_makehtml_isearch.Makefile \
      HTML_OPTION="$HTML_OPTION"        \
      HTML_OPTION_JP="$HTML_OPTION_JP"  \
      html-isearch
+
+if [ $? -ne 0 ]; then
+  exit 1
+fi
 
 
 make_isearch () {

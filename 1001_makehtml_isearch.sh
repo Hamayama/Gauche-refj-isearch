@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-22 v1.16
+# 2016-2-27 v1.17
 
 #set -x
 set -u
@@ -68,6 +68,15 @@ make_anchor () {
   cp $3 $3.bak
   sed -e "s@$4@$1$4@" $3.bak > $3
   rm -f $3.bak
+}
+
+change_header () {
+  echo "change header : $1"
+  cp $1 $1.bak
+  sed -e "s@<html lang=\"en\"@<html lang=\"$2\"@" \
+      -e "s@<title>.*</title>@<title>$3</title>@" \
+      $1.bak > $1
+  rm -f $1.bak
 }
 
 
@@ -186,4 +195,13 @@ make_isearch () {
 make_isearch refe
 make_isearch refj
 
+change_header                 \
+  $FRAME_FILE                 \
+  'ja'                        \
+  'Gauche ユーザリファレンス'
+
+change_header                 \
+  $INPUT_FILE                 \
+  'ja'                        \
+  'Gauche ユーザリファレンス'
 

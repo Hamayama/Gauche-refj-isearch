@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-27 v1.17
+# 2016-2-28 v1.18
 
 #set -x
 set -u
@@ -189,19 +189,21 @@ make_isearch () {
     '/class="appendix">(Appendix C|C)/i <a name="Index1000"><\/a>' \
     $INPUT_FILE                                                    \
     '#Index1000'
+
+  if [ "$1" = "refj" ]; then
+    change_header                 \
+      $FRAME_FILE                 \
+      'ja'                        \
+      'Gauche ユーザリファレンス'
+    change_header                 \
+      $INPUT_FILE                 \
+      'ja'                        \
+      'Gauche ユーザリファレンス'
+  fi
 }
 
 
 make_isearch refe
 make_isearch refj
 
-change_header                 \
-  $FRAME_FILE                 \
-  'ja'                        \
-  'Gauche ユーザリファレンス'
-
-change_header                 \
-  $INPUT_FILE                 \
-  'ja'                        \
-  'Gauche ユーザリファレンス'
 

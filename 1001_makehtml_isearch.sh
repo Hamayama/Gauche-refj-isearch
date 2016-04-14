@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-2-28 v1.18
+# 2016-4-15 v1.19
 
 #set -x
 set -u
@@ -159,7 +159,7 @@ make_isearch () {
          $INDEX_DATA
   done
   echo $TABLE_END >> $INDEX_DATA
- 
+
   insert_frame_data             \
     $FRAME_FILE                 \
     1010_gauche-ref-isearch.dat \

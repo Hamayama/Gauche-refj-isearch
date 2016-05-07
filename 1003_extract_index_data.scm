@@ -1,11 +1,16 @@
 (use util.match)
 
 (define (main args)
-  (define (usage) (exit 1 (format #f "Usage: ~a infile outfile" *program-name*)))
-  (match (cdr args)
-    [(infile outfile) (make-output-file infile outfile)]
+  (match args
+    [(_ infile outfile) (make-output-file infile outfile)]
     [_ (usage)])
   0)
+
+(define (usage)
+  (display
+   "Usage: gosh 1003_extract_index_data.scm infile outfile\n"
+   (current-error-port))
+  (exit 1))
 
 (define (make-output-file infile outfile)
   (with-input-from-file infile
@@ -29,7 +34,7 @@
         (print (regexp-replace-all*
                 line
                 #/<a href="/
-                (format #f "<a target=\"frame2\" href=\"~a" href-str)
+                (format "<a target=\"frame2\" href=\"~a" href-str)
                 #/<tr><td><\/td>/
                 "<tr>"
                 #/<td>&nbsp;<\/td>/

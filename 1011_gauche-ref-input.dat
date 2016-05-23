@@ -100,6 +100,7 @@ function keydown(ev) {
     // ***** Enterキーのときは、先頭の検索結果のURLへジャンプ *****
     if (key_code == 13 && first_result_url != "") {
         parent.frame2.location.href = first_result_url;
+        return;
     }
     // ***** 検索遅延タイマをセット *****
     now_isearch_pointer = 0;

@@ -26,7 +26,8 @@
 3. 本ツールの実行  
    Gauche のソースの doc フォルダ内にコピーしたファイルを実行します。  
    Windows の場合には、MinGW (32bit) 環境であれば、1000_makehtml_isearch_msys.bat を、  
-   MSYS2/MinGW-w64 (64bit/32bit) 環境であれば、1000_makehtml_isearch_msys2.bat を、  
+   MSYS2/MinGW-w64 (64bit) 環境であれば、1000_makehtml_isearch_msys2.bat を、  
+   MSYS2/MinGW-w64 (32bit) 環境であれば、1000_makehtml_isearch_msys2_32.bat を、  
    ダブルクリック等で実行してください。  
    他のOSであれば、シェル上で、1001_makehtml_isearch.sh を実行してください。  
    成功すると、以下の ファイル/フォルダ が doc フォルダ内に生成されます。  
@@ -114,4 +115,4 @@
 - 2016-5-24  v1.21 Enterキーで検索を行わないようにした
 
 
-(2016-5-24)
+(2016-7-19)

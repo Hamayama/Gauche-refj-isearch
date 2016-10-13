@@ -13,9 +13,6 @@
    事前に、Gaucheのインストール、開発環境のインストール、  
    Gacuheの開発最新版のソースの取得、および、コンパイルが必要になります。  
    Windows の場合には、以下のページを参考に実施ください。  
-   ＜開発環境に MinGW (32bit) を使う場合＞  
-   https://gist.github.com/Hamayama/19d7e779cec0480af0cf  
-   ＜開発環境に MSYS2/MinGW-w64 (64bit/32bit) を使う場合＞  
    https://gist.github.com/Hamayama/6666e5d2c8d5167d22f7
 
 2. 本ツールのダウンロードとコピー  
@@ -24,12 +21,16 @@
    そして中のファイル一式を、Gauche のソースの doc フォルダ内にコピーしてください。
 
 3. 本ツールの実行  
-   Gauche のソースの doc フォルダ内にコピーしたファイルを実行します。  
-   Windows の場合には、MinGW (32bit) 環境であれば、1000_makehtml_isearch_msys.bat を、  
-   MSYS2/MinGW-w64 (64bit) 環境であれば、1000_makehtml_isearch_msys2.bat を、  
-   MSYS2/MinGW-w64 (32bit) 環境であれば、1000_makehtml_isearch_msys2_32.bat を、  
-   ダブルクリック等で実行してください。  
-   他のOSであれば、シェル上で、1001_makehtml_isearch.sh を実行してください。  
+   シェルからコマンドを実行します。  
+   ＜MSYS2/MinGW-w64 (64bit) 環境の場合＞  
+   プログラムメニューから MSYS2 の MinGW-w64 Win64 Shell を起動して、以下のコマンドを実行してください。  
+   ＜MSYS2/MinGW-w64 (32bit) 環境の場合＞  
+   プログラムメニューから MSYS2 の MinGW-w64 Win32 Shell を起動して、以下のコマンドを実行してください。  
+   ( c:\work にソースを展開した場合)
+   ```
+   cd /c/work/Gauche/doc
+   ./1001_makehtml_isearch.sh
+   ```
    成功すると、以下の ファイル/フォルダ が doc フォルダ内に生成されます。  
    (データが分割されるかどうかは、使用したHTML生成ツールの種類によって決まります)
    ```
@@ -40,8 +41,8 @@
    gauche-refj-isearch-input.html  日本語版の検索処理用HTMLファイル
    gauche-refj-isearch-main.html   日本語版のデータ(データ分割時にはフォルダになります)
    ```
-   (注意) Makefileが見つからないというエラーが出る場合は、一度 Gauche のソースを  
-   コンパイルしてから、上記ファイルを実行してください。
+   (注意) Makefile が見つからないというエラーが出る場合は、  
+   一度 Gauche のソースをコンパイルしてから、上記コマンドを実行してください。
 
 
 ## マニュアルの使い方
@@ -83,12 +84,12 @@
 - OS
   - Windows 8.1 (64bit)
 - 環境
+  - MSYS2/MinGW-w64 (64bit/32bit) (texi2html v1.82, texi2any v6.0)
   - MinGW (32bit) (makeinfo v4.13)
-  - MSYS2/MinGW-w64 (64bit/32bit) (texi2any v6.0, texi2html v1.82)
 - 言語
-  - Gauche v0.9.5_pre1
+  - Gauche v0.9.5
 - ブラウザ
-  - Chrome v50
+  - Chrome v54
 
 ## 履歴
 - 2016-2-16  v1.00 (初版)
@@ -114,6 +115,7 @@
 - 2016-5-7   v1.20 索引抽出処理一部見直し
 - 2016-5-24  v1.21 Enterキーで検索を行わないようにした
 - 2016-8-7   v1.22 1004_texi2html_init.pl の改行コード修正(CRLF→LF)
+- 2016-10-13 v1.23 README修正等(Gauche v0.9.5 対応)
 
 
-(2016-8-7)
+(2016-10-13)

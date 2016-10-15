@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-10-15 v1.24
+# 2016-10-15 v1.25
 
 #set -x
 set -u
@@ -22,7 +22,8 @@ check_html_maker () {
     type texi2any
     if [ $? -eq 0 ]; then
       HTML_MAKER='texi2any'
-      HTML_OPTION="-c TEXI2HTML=1 --split=section -c PRE_BODY_CLOSE='$PRE_BODY_CLOSE'"
+      HTML_OPTION='--html --split=section -c TEXI2HTML=1 -c USE_TITLEPAGE_FOR_TITLE=0'
+      HTML_OPTION="$HTML_OPTION -c PRE_BODY_CLOSE='$PRE_BODY_CLOSE'"
     fi
   fi
   if [ -z "$HTML_MAKER" ]; then

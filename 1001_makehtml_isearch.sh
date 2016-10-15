@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # makehtml-isearch
-# 2016-10-13 v1.23
+# 2016-10-15 v1.24
 
 #set -x
 set -u
@@ -10,17 +10,19 @@ check_html_maker () {
   HTML_MAKER=''
   HTML_OPTION=''
   HTML_OPTION_JP=''
+  PRE_BODY_CLOSE="<hr><div class=\"footer\"><p>Gauche version `gauche-config -V`</p></div>"
+  export PRE_BODY_CLOSE
   type texi2html
   if [ $? -eq 0 ]; then
     HTML_MAKER='texi2html'
     HTML_OPTION='--number --split=section --init-file=$(srcdir)/1004_texi2html_init.pl'
-    HTML_OPTION_JP='--init-file=$(srcdir)/ja-init.pl'
+    HTML_OPTION_JP='--init-file=$(srcdir)/1005_texi2html_ja.pl'
   fi
   if [ -z "$HTML_MAKER" ]; then
     type texi2any
     if [ $? -eq 0 ]; then
       HTML_MAKER='texi2any'
-      HTML_OPTION='-c TEXI2HTML=1 --split=section'
+      HTML_OPTION="-c TEXI2HTML=1 --split=section -c PRE_BODY_CLOSE='$PRE_BODY_CLOSE'"
     fi
   fi
   if [ -z "$HTML_MAKER" ]; then

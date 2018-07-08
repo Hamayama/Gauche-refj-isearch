@@ -16,16 +16,16 @@
    https://gist.github.com/Hamayama/6666e5d2c8d5167d22f7
 
 2. 本ツールのダウンロードとコピー  
-   本サイト( https://github.com/Hamayama/Gauche-refj-isearch )のファイルを、  
-   (Download Zip ボタン等で)ダウンロードして、適当なフォルダに展開してください。  
+   本サイト ( https://github.com/Hamayama/Gauche-refj-isearch ) のファイルを、  
+   (Download Zip ボタン等で) ダウンロードして、適当なフォルダに展開してください。  
    そして中のファイル一式を、Gauche のソースの doc フォルダ内にコピーしてください。
 
 3. 本ツールの実行  
    シェルからコマンドを実行します。  
    ＜MSYS2/MinGW-w64 (64bit) 環境の場合＞  
-   プログラムメニューから MSYS2 の MinGW-w64 Win64 Shell を起動して、以下のコマンドを実行してください。  
+   プログラムメニューから MSYS2 の MinGW 64bit Shell を起動して、以下のコマンドを実行してください。  
    ＜MSYS2/MinGW-w64 (32bit) 環境の場合＞  
-   プログラムメニューから MSYS2 の MinGW-w64 Win32 Shell を起動して、以下のコマンドを実行してください。  
+   プログラムメニューから MSYS2 の MinGW 32bit Shell を起動して、以下のコマンドを実行してください。  
    ( c:\work にソースを展開した場合)
    ```
    cd /c/work/Gauche/doc
@@ -33,14 +33,16 @@
    ```
    成功すると、以下の ファイル/フォルダ が doc フォルダ内に生成されます。  
    (データが分割されるかどうかは、使用したHTML生成ツールの種類によって決まります)
-   ```
-   gauche-refe-isearch.html        英語版の起動用HTMLファイル
-   gauche-refe-isearch-input.html  英語版の検索処理用HTMLファイル
-   gauche-refe-isearch-main.html   英語版のデータ(データ分割時にはフォルダになります)
-   gauche-refj-isearch.html        日本語版の起動用HTMLファイル
-   gauche-refj-isearch-input.html  日本語版の検索処理用HTMLファイル
-   gauche-refj-isearch-main.html   日本語版のデータ(データ分割時にはフォルダになります)
-   ```
+   
+   |<div align="center">生成ファイル</div>|<div align="center">内容</div>|
+   |---|---|
+   |gauche-refe-isearch.html      |英語版の起動用HTMLファイル                          |
+   |gauche-refe-isearch-input.html|英語版の検索処理用HTMLファイル                      |
+   |gauche-refe-isearch-main.html |英語版のデータ(データ分割時にはフォルダになります)  |
+   |gauche-refj-isearch.html      |日本語版の起動用HTMLファイル                        |
+   |gauche-refj-isearch-input.html|日本語版の検索処理用HTMLファイル                    |
+   |gauche-refj-isearch-main.html |日本語版のデータ(データ分割時にはフォルダになります)|
+   
    (注意) Makefile が見つからないというエラーが出る場合は、  
    一度 Gauche のソースをコンパイルしてから、上記コマンドを実行してください。
 
@@ -60,11 +62,11 @@
    (上から順番に検索して、最初に見つかったものを使用します)  
    texi2html か texi2any を使用した場合には、データは分割されてフォルダ内に格納されます。  
    
-   ```
-   ・texi2html (v1.82 で確認)
-   ・texi2any  (v6.0  で確認)
-   ・makeinfo  (v4.13 で確認)
-   ```
+   |<div align="center">HTML生成ツール</div>|<div align="center">備考</div>|
+   |---|---|
+   |texi2html|v1.82 で確認|
+   |texi2any |v6.3  で確認|
+   |makeinfo |v4.13 で確認|
 
 2. 古いブラウザ(IE8,IE9等)では、インクリメンタルサーチ機能は使用できません。  
    その場合は、インクリメンタルサーチ機能が非表示になります。  
@@ -84,12 +86,13 @@
 - OS
   - Windows 8.1 (64bit)
 - 環境
-  - MSYS2/MinGW-w64 (64bit/32bit) (texi2html v1.82, texi2any v6.0)
+  - MSYS2/MinGW-w64 (64bit/32bit) (texi2html v1.82, texi2any v6.3)
   - MinGW (32bit) (makeinfo v4.13)
 - 言語
+  - Gauche v0.9.6
   - Gauche v0.9.5
 - ブラウザ
-  - Chrome v54
+  - Chrome v67
 
 ## 履歴
 - 2016-2-16  v1.00 (初版)
@@ -120,6 +123,7 @@
 - 2016-10-15 v1.25 texi2anyのオプション変更(タイトルOFF)
 - 2016-10-15 v1.26 texi2anyのオプション変更(親URL仮設定)
 - 2016-10-26 v1.27 texi2anyのオプション変更(クォートの位置見直し)
+- 2018-7-8   v1.27 README修正のみ(Gauche v0.9.6 で動作確認)
 
 
-(2018-7-1)
+(2018-7-8)

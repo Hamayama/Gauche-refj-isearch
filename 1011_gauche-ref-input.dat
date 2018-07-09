@@ -172,7 +172,7 @@ function exec_isearch() {
 </div>
 <div id="input_container">
 <form action="#" onsubmit="return false;">
-<b>Search : </b><input type="text" id="word" value="">
+<b>Search : </b><input type="text" id="word">
 </form>
 </div>
 <!-- index-data -->
